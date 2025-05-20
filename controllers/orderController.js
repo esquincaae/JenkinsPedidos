@@ -1,47 +1,47 @@
-const { Orden, Carrito, CarritoProducto, OrdenProducto, Producto } = require("../models");
+const { Order, Cart, CartProduct, OrderProduct, Product} = require("../models");
 
-const crearOrden = async (req, res) => {
+const createOrder = async (req, res) => {
   try {
-    const carrito = await Carrito.findOne({
-      where: { usuarioId: req.usuarioId },
-      include: { model: Producto }
+    const cart = await Cart.findOne({
+      where: { userId: req.userId },
+      include: { model: Product }
     });
 
-    if (!carrito || carrito.Productos.length === 0) {
-      return res.status(400).json({ mensaje: "El carrito está vacío" });
+    if (!carrit || cart.Products.length === 0) {   
+      return res.status(400).json({ message: "El carrito está vacío" });
     }
 
     let total = 0;
-    const productosOrden = await Promise.all(carrito.Productos.map(async producto => {
-      const cantidad = producto.CarritoProducto.cantidad;
-      const subtotal = producto.precio * cantidad;
+    const productsOrder = await Promise.all(cart.Products.map(async product => {
+      const amount = product.CartProduct.amount;
+      const subtotal = product.price * amount;
       total += subtotal;
 
       return {
-        productoId: producto.id,
-        cantidad,
-        precioUnitario: producto.precio
+        productId: product.id,
+        amount,
+        unitPrice: product.price
       };
     }));
 
-    const orden = await Orden.create({
-      usuarioId: req.usuarioId,
+    const order = await Order.create({
+      userId: req.userId,
       total,
-      estado: "pendiente",
-      fecha: new Date()
+      status: "pendiente",
+      date: new Date()
     });
 
-    for (const item of productosOrden) {
-      await OrdenProducto.create({ ...item, ordenId: orden.id });
+    for (const item of productsOrder) {
+      await OrderProduct.create({ ...item, orderId: order.id });
     }
 
     // Vaciar carrito
-    await CarritoProducto.destroy({ where: { carritoId: carrito.id } });
+    await CartProduct.destroy({ where: { cartId: cart.id } });
 
-    res.status(201).json({ mensaje: "Orden creada con éxito", ordenId: orden.id });
+    res.status(201).json({ message: "Orden creada con éxito", ordenId: orden.id });
   } catch (err) {
-    res.status(500).json({ mensaje: "Error al crear orden", error: err.message });
+    res.status(500).json({ message: "Error al crear orden", error: err.message });
   }
 };
 
-module.exports = { crearOrden };
+module.exports = { createOrder };

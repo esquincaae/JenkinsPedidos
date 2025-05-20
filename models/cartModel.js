@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define("Carrito", {
-    usuarioId: {
+  return sequelize.define("Cart", {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false
     }

@@ -1,15 +1,15 @@
-const { Usuario } = require("../models");
+const { User } = require("../models");
 
 const perfil = async (req, res) => {
   try {
-    const usuario = await Usuario.findByPk(req.usuarioId, {
-      attributes: ["id", "nombre", "email"]
+    const user = await User.findByPk(req.userId, {
+      attributes: ["id", "name", "email"]
     });
-    if (!usuario) return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
 
-    res.json(usuario);
+    res.json(user);
   } catch (err) {
-    res.status(500).json({ mensaje: "Error al obtener perfil", error: err.message });
+    res.status(500).json({ message: "Error al obtener perfil", error: err.message });
   }
 };
 

@@ -1,51 +1,51 @@
-const { Carrito, Producto, CarritoProducto } = require("../models");
+const { Cart, Product, CartProduct } = require("../models");
 
-const verCarrito = async (req, res) => {
+const getCart = async (req, res) => {
   try {
-    const carrito = await Carrito.findOne({
-      where: { usuarioId: req.usuarioId },
-      include: { model: Producto, through: { attributes: ["cantidad"] } }
+    const cart = await Cart.findOne({
+      where: { userId: req.userId },
+      include: { model: Product, through: { attributes: ["amount"] } }
     });
-    res.json(carrito || { mensaje: "Carrito vacío" });
+    res.json(cart || { message: "Carrito vacío" });
   } catch (err) {
-    res.status(500).json({ mensaje: "Error al obtener carrito", error: err.message });
+    res.status(500).json({ message: "Error al obtener carrito", error: err.message });
   }
 };
 
-const agregarProducto = async (req, res) => {
+const addProduct = async (req, res) => {
   try {
-    const { productoId, cantidad } = req.body;
-    let carrito = await Carrito.findOne({ where: { usuarioId: req.usuarioId } });
-    if (!carrito) carrito = await Carrito.create({ usuarioId: req.usuarioId });
+    const { productId, amount } = req.body;
+    let cart = await Cart.findOne({ where: { userId: req.userId } });
+    if (!cart) cart = await Cart.create({ userId: req.userId });
 
-    let item = await CarritoProducto.findOne({
-      where: { carritoId: carrito.id, productoId }
+    let item = await CartProduct.findOne({
+      where: { cartId: cart.id, productId }
     });
 
     if (item) {
-      item.cantidad += cantidad;
+      item.amount += amount;
       await item.save();
     } else {
-      await CarritoProducto.create({ carritoId: carrito.id, productoId, cantidad });
+      await CartProduct.create({ cartId: cart.id, productId, amount });
     }
 
-    res.json({ mensaje: "Producto agregado al carrito" });
+    res.json({ message: "Producto agregado al carrito" });
   } catch (err) {
-    res.status(500).json({ mensaje: "Error al agregar al carrito", error: err.message });
+    res.status(500).json({ message: "Error al agregar al carrito", error: err.message });
   }
 };
 
-const eliminarProducto = async (req, res) => {
+const deleteProduct = async (req, res) => {
   try {
-    const { productoId } = req.body;
-    const carrito = await Carrito.findOne({ where: { usuarioId: req.usuarioId } });
-    if (!carrito) return res.status(404).json({ mensaje: "Carrito no encontrado" });
+    const { productId } = req.body;
+    const cart = await Cart.findOne({ where: { userId: req.userId } });
+    if (!cart) return res.status(404).json({ message: "Carrito no encontrado" });
 
-    await CarritoProducto.destroy({ where: { carritoId: carrito.id, productoId } });
-    res.json({ mensaje: "Producto eliminado del carrito" });
+    await CartProduct.destroy({ where: { cartId: cart.id, productId } });
+    res.json({ message: "Producto eliminado del carrito" });
   } catch (err) {
-    res.status(500).json({ mensaje: "Error al eliminar del carrito", error: err.message });
+    res.status(500).json({ message: "Error al eliminar del carrito", error: err.message });
   }
 };
 
-module.exports = { verCarrito, agregarProducto, eliminarProducto };
+module.exports = {getCart, addProduct, deleteProduct};

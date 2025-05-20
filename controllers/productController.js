@@ -1,23 +1,23 @@
-const { Producto } = require("../models");
+const { Product } = require("../models");
 
-const listarProductos = async (req, res) => {
+const listProducts = async (req, res) => {
   try {
-    const productos = await Producto.findAll();
-    res.json(productos);
+    const products = await Product.findAll();
+    res.json(products);
   } catch (err) {
-    res.status(500).json({ mensaje: "Error al obtener productos", error: err.message });
+    res.status(500).json({ message: "Error al obtener productos", error: err.message });
   }
 };
 
-const obtenerProducto = async (req, res) => {
+const getProduct = async (req, res) => {
   try {
-    const producto = await Producto.findByPk(req.params.id);
-    if (!producto) return res.status(404).json({ mensaje: "Producto no encontrado" });
+    const product = await Product.findByPk(req.params.id);
+    if (!product) return res.status(404).json({ message: "Producto no encontrado" });
 
-    res.json(producto);
+    res.json(product);
   } catch (err) {
-    res.status(500).json({ mensaje: "Error al obtener producto", error: err.message });
+    res.status(500).json({ message: "Error al obtener producto", error: err.message });
   }
 };
 
-module.exports = { listarProductos, obtenerProducto };
+module.exports = { listProducts, getProduct };

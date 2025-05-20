@@ -1,18 +1,18 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define("OrdenProducto", {
-    ordenId: {
+  return sequelize.define("OrderProduct", {
+    orderId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    productoId: {
+    productId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    cantidad: {
+    amont: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    precioUnitario: {
+    unitPrice: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false
     }

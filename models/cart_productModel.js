@@ -1,14 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define("CarritoProducto", {
-    carritoId: {
+  return sequelize.define("CartProduct", {
+    cartId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    productoId: {
+    productId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    cantidad: {
+    amount: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 1

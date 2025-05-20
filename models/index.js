@@ -1,49 +1,49 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize(process.env.DB_URL);
+const sequelize = require("../config/database");
+const { DataTypes } = require("sequelize");
 
-const Usuario = require("./usuario.model")(sequelize, DataTypes);
-const Producto = require("./producto.model")(sequelize, DataTypes);
-const Carrito = require("./carrito.model")(sequelize, DataTypes);
-const CarritoProducto = require("./carrito_producto.model")(sequelize, DataTypes);
-const Orden = require("./orden.model")(sequelize, DataTypes);
-const OrdenProducto = require("./orden_producto.model")(sequelize, DataTypes);
-const Pago = require("./pago.model")(sequelize, DataTypes);
+const User = require("./userModel")(sequelize, DataTypes);
+const Product = require("./productModel")(sequelize, DataTypes);
+const Cart = require("./cartModel")(sequelize, DataTypes);
+const CartProduct = require("./cart_productModel")(sequelize, DataTypes);
+const Order = require("./orderModel")(sequelize, DataTypes);
+const OrderProduct = require("./order_productModel")(sequelize, DataTypes);
+const Payments = require("./paymentsModel")(sequelize, DataTypes);
 
-// Relaciones
-Usuario.hasOne(Carrito, { foreignKey: "usuarioId" });
-Carrito.belongsTo(Usuario, { foreignKey: "usuarioId" });
+// Relaciones (igual que antes)
+User.hasOne(Cart, { foreignKey: "userId" });
+Cart.belongsTo(User, { foreignKey: "userId" });
 
-Carrito.belongsToMany(Producto, {
-  through: CarritoProducto,
-  foreignKey: "carritoId"
+Cart.belongsToMany(Product, {
+  through: CartProduct,
+  foreignKey: "cartId"
 });
-Producto.belongsToMany(Carrito, {
-  through: CarritoProducto,
-  foreignKey: "productoId"
-});
-
-Usuario.hasMany(Orden, { foreignKey: "usuarioId" });
-Orden.belongsTo(Usuario, { foreignKey: "usuarioId" });
-
-Orden.belongsToMany(Producto, {
-  through: OrdenProducto,
-  foreignKey: "ordenId"
-});
-Producto.belongsToMany(Orden, {
-  through: OrdenProducto,
-  foreignKey: "productoId"
+Product.belongsToMany(Cart, {
+  through: CartProduct,
+  foreignKey: "productId"
 });
 
-Orden.hasOne(Pago, { foreignKey: "ordenId" });
-Pago.belongsTo(Orden, { foreignKey: "ordenId" });
+User.hasMany(Order, { foreignKey: "userId" });
+Order.belongsTo(User, { foreignKey: "userId" });
+
+Order.belongsToMany(Product, {
+  through: OrderProduct,
+  foreignKey: "orderId"
+});
+Product.belongsToMany(Order, {
+  through: OrderProduct,
+  foreignKey: "productId"
+});
+
+Order.hasOne(Payments, { foreignKey: "orderId" });
+Payments.belongsTo(Order, { foreignKey: "orderId" });
 
 module.exports = {
   sequelize,
-  Usuario,
-  Producto,
-  Carrito,
-  CarritoProducto,
-  Orden,
-  OrdenProducto,
-  Pago
+  User,
+  Product,
+  Cart,
+  CartProduct,
+  Order,
+  OrderProduct,
+  Payments,
 };

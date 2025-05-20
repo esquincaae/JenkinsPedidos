@@ -1,18 +1,18 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define("Pago", {
-    ordenId: {
+  return sequelize.define("Payments", {
+    orderId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    metodo: {
+    method: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    estado: {
+    status: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    fecha: {
+    date: {
       type: DataTypes.DATE,
       allowNull: false
     }
